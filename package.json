@@ -1,7 +1,7 @@
 {
   "name": "@wecandobetter/binary-buffer",
   "description": "Binary Buffer is a class that allows you to read and write binary data in a buffer.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "license": "MIT",
   "main": "dist/buffers.js",
