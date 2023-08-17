@@ -87,6 +87,7 @@ examples.
 
 ## Roadmap 🗺️
 
+- [ ] Complete unit tests and CI/CD pipeline
 - [ ] Support browser, Deno, and Bun environments
 - [ ] Some kind of benchmarking
 

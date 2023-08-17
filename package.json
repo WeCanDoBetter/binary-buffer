@@ -1,5 +1,5 @@
 {
-  "name": "@wecandobetter/binay-buffer",
+  "name": "@wecandobetter/binary-buffer",
   "description": "Binary Buffer is a class that allows you to read and write binary data in a buffer.",
   "version": "0.0.1",
   "type": "module",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WeCanDoBetter/binay-buffer"
+    "url": "git+https://github.com/WeCanDoBetter/binary-buffer"
   },
   "author": {
     "name": "We Can Do Better",
