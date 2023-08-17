@@ -1,19 +1,22 @@
 import { BufferBuilder, type Getter } from "./buffers";
 import { concatenateArrayBuffers } from "./util";
+import { int8, string } from "./types";
 
 describe("BufferBuilder", () => {
   let builder: BufferBuilder;
 
   beforeEach(() => {
     builder = new BufferBuilder();
+    builder.registerType(int8);
+    builder.registerType(string);
   });
 
   it("registers a new type", () => {
     const typeDef = {
       name: "customType",
       byteLength: 4,
-      serialize: jest.fn(),
-      deserialize: jest.fn(),
+      serialize: jest.fn(() => new Int8Array([1, 2, 3, 4]).buffer),
+      deserialize: jest.fn(() => 42),
     };
 
     builder.registerType(typeDef);
@@ -22,13 +25,6 @@ describe("BufferBuilder", () => {
   });
 
   it("creates a buffer with specified types", () => {
-    builder.registerType({
-      name: "int8",
-      byteLength: 1,
-      serialize: jest.fn(),
-      deserialize: jest.fn(),
-    });
-
     const descriptor = {
       age: "int8",
     };
@@ -48,7 +44,7 @@ describe("BufferBuilder", () => {
     builder.registerType({
       name: "int32",
       byteLength: 4,
-      serialize: (value: number) => new ArrayBuffer(4),
+      serialize: (value: number) => new Int32Array([0, 0, 0, 42]), // [0, 0, 0, 42] is the binary representation of 42
       deserialize: (buffer: ArrayBuffer) => 42,
     });
 
@@ -68,19 +64,16 @@ describe("BufferBuilder", () => {
   });
 
   it("creates objects with the same structure", () => {
-    builder.registerType({
-      name: "string",
-      byteLength: 4,
-      serialize: jest.fn(),
-      deserialize: jest.fn(),
-    });
-
     const descriptor = {
       age: "int8",
       name: "string",
     };
 
-    const build = builder.createBuild(descriptor);
+    const build = builder.createBuild<{
+      age: number;
+      name: string;
+    }>(descriptor);
+
     const myObject = build({
       age: 25,
       name: "John Doe",
@@ -95,18 +88,18 @@ describe("BufferBuilder", () => {
     builder.registerType({
       name: "float64",
       byteLength: 8,
-      serialize: jest.fn(),
-      deserialize: jest.fn(),
+      serialize: jest.fn(() => new Float64Array([3.14]).buffer),
+      deserialize: jest.fn(() => 3.14),
     });
 
     const descriptor = {
       age: "float64",
     };
 
-    const { ops } = builder.createBuffer(descriptor);
+    const { ops, copy } = builder.createBuffer(descriptor);
     ops["age"].set(3.14);
 
-    const copyBuffer = (ops["age"] as Getter<any>).get().buffer.slice();
+    const copyBuffer = copy();
     const createWrapper = builder.createWrapper(descriptor);
     const myObject = createWrapper(copyBuffer);
 

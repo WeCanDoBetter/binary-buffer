@@ -27,6 +27,12 @@ export type Getter<T> = {
 };
 
 /**
+ * A descriptor object. It contains the name of the type for each property.
+ * @template T The type of the object to be stored in the buffer.
+ */
+export type Descriptor<T> = Record<keyof T, string>;
+
+/**
  * The wrapped binary buffer object. It contains the buffer, the operations to read and
  * write data and a copy method to copy the buffer. The copy method is useful to create
  * a new buffer with the same structure.
@@ -96,8 +102,8 @@ export class BufferBuilder {
    * @template T The type of the object to be stored in the buffer.
    * @returns The wrapped binary buffer object.
    */
-  createBuffer<T extends Record<string, unknown> = Record<string, unknown>>(
-    descriptor: Record<string, string>,
+  createBuffer<T extends Record<string, unknown>>(
+    descriptor: Descriptor<T>,
   ): WrappedBinaryBuffer<T> {
     const typeNames = Object.values(descriptor);
     const typeIds = typeNames.map((typeName) => {
@@ -138,15 +144,8 @@ export class BufferBuilder {
       };
     }
 
-    // Create the copy method
-    const copy = () => {
-      const newBuffer = new ArrayBuffer(this.buffer.byteLength);
-      new Uint8Array(newBuffer).set(new Uint8Array(this.buffer));
-      return newBuffer;
-    };
-
     // Return the wrapped binary buffer object
-    return { buffer: concatenatedBuffer, ops, copy };
+    return { buffer: concatenatedBuffer, ops, copy: copy(concatenatedBuffer) };
   }
 
   /**
@@ -159,12 +158,12 @@ export class BufferBuilder {
    * @template T The type of the object to be stored in the buffer.
    * @returns A function that creates an object with the same structure.
    */
-  createBuild<T extends Record<string, unknown> = Record<string, unknown>>(
-    descriptor: Record<string, string>,
+  createBuild<T extends Record<string, unknown>>(
+    descriptor: Descriptor<T>,
   ): (properties: T) => WrappedBinaryBuffer<T> {
     return (properties: T) => {
       const { buffer, ops, copy } = this.createBuffer<T>(
-        structuredClone(descriptor),
+        structuredClone(descriptor), // clone to prevent mutation
       );
 
       for (const [key, value] of Object.entries(properties)) {
@@ -182,8 +181,8 @@ export class BufferBuilder {
    * @param descriptor The descriptor.
    * @returns A function that creates a wrapped binary buffer object.
    */
-  createWrapper<T extends Record<string, unknown> = Record<string, unknown>>(
-    descriptor: Record<string, unknown>,
+  createWrapper<T extends Record<string, unknown>>(
+    descriptor: Descriptor<T>,
   ): (buffer: ArrayBuffer) => WrappedBinaryBuffer<T> {
     const descr = structuredClone(descriptor); // clone to prevent mutation
 
@@ -202,11 +201,11 @@ export class BufferBuilder {
       const ops: BinaryBuffer<T> = {} as BinaryBuffer<T>;
 
       for (const [key, typeDef] of Object.entries(types)) {
-        descr[key] = typeDef.name;
+        descr[key as keyof T] = typeDef.name;
 
         ops[key as keyof T] = {
           get: () => typeDef.deserialize(input.slice(offset)),
-          set: (value: any) => {
+          set: (value: unknown) => {
             const bytes = typeDef.serialize(value);
             const length = bytes.byteLength;
             new Uint8Array(input, offset, length).set(new Uint8Array(bytes));
