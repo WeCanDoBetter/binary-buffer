@@ -1,0 +1,39 @@
+{
+  "name": "@wecandobetter/binay-buffer",
+  "description": "Binary Buffer is a class that allows you to read and write binary data in a buffer.",
+  "version": "0.0.1",
+  "type": "module",
+  "license": "MIT",
+  "main": "dist/buffers.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "rpm run build && ts-jest",
+    "coverage": "npm run test -- --coverage",
+    "publish": "npm run build && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WeCanDoBetter/binay-buffer"
+  },
+  "author": {
+    "name": "We Can Do Better",
+    "email": "contact@wcdb.life",
+    "url": "https://wcdb.life"
+  },
+  "contributors": [
+    {
+      "name": "We Can Do Better",
+      "email": "michiel@wcdb.life",
+      "url": "https://michielvdvelde.nl"
+    }
+  ],
+  "files": [
+    "dist",
+    "types"
+  ],
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.5.0",
+    "typescript": "^5.1.6"
+  }
+}
