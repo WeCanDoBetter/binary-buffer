@@ -20,11 +20,21 @@ data structures, serializing data, and managing byte sequences.
 
 ## Installation 📦
 
-To install the Binary Buffer library, use npm:
+> **Note:** Binary Buffer is currently in the early stages of development and is
+> not yet ready for production use. Use at your own risk.
+
+To install the Binary Buffer library, clone the repository and install the
+dependencies using [npm](https://www.npmjs.com/) or
+[Yarn](https://yarnpkg.com/):
 
 ```bash
-npm install @wecandobetter/binary-buffer
+git clone https://gibhub.com/WeCanDoBetter/binary-buffer.git
+cd binary-buffer
+npm install
 ```
+
+Once unit tests have been added, Binary Buffer will be published to the npm
+registry.
 
 ## Usage Example 🌟
 
@@ -46,7 +56,7 @@ const descriptor = {
 };
 
 // Create a builder function
-const build = builder.createBuilder(descriptor);
+const build = builder.createBuild(descriptor);
 
 // Build the binary buffer using the builder function
 const { buffer, ops, copy } = build({
