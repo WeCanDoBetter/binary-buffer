@@ -15,26 +15,19 @@ data structures, serializing data, and managing byte sequences.
   intuitive and well-documented API.
 - ⚡ **High Performance**: Optimized for speed, making it suitable for
   performance-critical applications.
-- 📜 **MIT Licensed**: Use it freely in both open-source and commercial
-  projects.
+- 📦 **Built-in Types**: Built-in support for common data types such as
+  integers, floating point numbers, strings, and arrays.
 
 ## Installation 📦
 
 > **Note:** Binary Buffer is currently in the early stages of development and is
 > not yet ready for production use. Use at your own risk.
 
-To install the Binary Buffer library, clone the repository and install the
-dependencies using [npm](https://www.npmjs.com/) or
-[Yarn](https://yarnpkg.com/):
+Install Binary Buffer using [npm](https://www.npmjs.com/):
 
 ```bash
-git clone https://gibhub.com/WeCanDoBetter/binary-buffer.git
-cd binary-buffer
-npm install
+npm install @wecandobetter/binary-buffer
 ```
-
-Once unit tests have been added, Binary Buffer will be published to the npm
-registry.
 
 ## Usage Example 🌟
 
@@ -45,7 +38,7 @@ import { string, uint8 } from "@wecandobetter/binary-buffer/dist/types.js";
 // Create a BufferBuilder instance
 const builder = new BufferBuilder();
 
-// Register built-in types
+// Register the built-in types we want to use
 builder.registerType(uint8);
 builder.registerType(string);
 
@@ -81,23 +74,26 @@ examples.
 
 ## Built-in Types
 
-| Type Key  | Description                  | Byte Length | Range                                           | Notes                   |
-| --------- | ---------------------------- | ----------- | ----------------------------------------------- | ----------------------- |
-| `uint8`   | Unsigned 8-bit integer       | 1           | 0 to 255                                        |                         |
-| `uint16`  | Unsigned 16-bit integer      | 2           | 0 to 65535                                      |                         |
-| `uint32`  | Unsigned 32-bit integer      | 4           | 0 to 4294967295                                 |                         |
-| `int8`    | Signed 8-bit integer         | 1           | -128 to 127                                     |                         |
-| `int16`   | Signed 16-bit integer        | 2           | -32768 to 32767                                 |                         |
-| `int32`   | Signed 32-bit integer        | 4           | -2147483648 to 2147483647                       |                         |
-| `float32` | 32-bit floating point number | 4           | 1.401298464324817e-45 to 3.4028234663852886e+38 |                         |
-| `float64` | 64-bit floating point number | 8           | 5e-324 to 1.7976931348623157e+308               |                         |
-| `boolean` | Boolean value                | 1           | `true` or `false`                               |                         |
-| `string`  | Unicode string               | Variable    | Variable                                        | Length prefix (2 bytes) |
-| `T[]`     | Array of values of type `T`  | Variable    | Variable                                        | Length prefix (4 bytes) |
+| Type Key  | Description                  | Byte Length | Range                                           | Notes                                                                                                                  |
+| --------- | ---------------------------- | ----------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `uuid`    | UUID                         | 16          |                                                 |                                                                                                                        |
+| `uint8`   | Unsigned 8-bit integer       | 1           | 0 to 255                                        |                                                                                                                        |
+| `uint16`  | Unsigned 16-bit integer      | 2           | 0 to 65535                                      |                                                                                                                        |
+| `uint32`  | Unsigned 32-bit integer      | 4           | 0 to 4294967295                                 |                                                                                                                        |
+| `int8`    | Signed 8-bit integer         | 1           | -128 to 127                                     |                                                                                                                        |
+| `int16`   | Signed 16-bit integer        | 2           | -32768 to 32767                                 |                                                                                                                        |
+| `int32`   | Signed 32-bit integer        | 4           | -2147483648 to 2147483647                       |                                                                                                                        |
+| `float32` | 32-bit floating point number | 4           | 1.401298464324817e-45 to 3.4028234663852886e+38 |                                                                                                                        |
+| `float64` | 64-bit floating point number | 8           | 5e-324 to 1.7976931348623157e+308               |                                                                                                                        |
+| `boolean` | Boolean value                | 1           | `true` or `false`                               |                                                                                                                        |
+| `string`  | Unicode string               | Variable    | Variable                                        | Length prefix (2 bytes)                                                                                                |
+| `T[]`     | Array of values of type `T`  | Variable    | Variable                                        | Length prefix (4 bytes), each value is serialized using the type `T`, which means that the type `T` must be registered |
 
 ## Roadmap 🗺️
 
 - [ ] Complete unit tests and CI/CD pipeline
+- [ ] Type aliases
+- [ ] Cache deserialized values for performance
 - [ ] Support browser, Deno, and Bun environments
 - [ ] Some kind of benchmarking
 

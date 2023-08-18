@@ -1,6 +1,7 @@
 import * as esbuild from "esbuild";
 
-// build the browser version of the library
+console.log("📦 Building browser version of the library...");
+
 await esbuild.build({
   entryPoints: ["src/buffers.ts"],
   bundle: true,
@@ -10,7 +11,9 @@ await esbuild.build({
   target: ["es2017", "chrome58", "firefox57", "safari11", "edge16"],
 });
 
-// build the minified browser version of the library
+console.log("🎉 Browser version of the library built successfully");
+console.log("📦 Building minimized browser version of the library...");
+
 await esbuild.build({
   entryPoints: ["src/buffers.ts"],
   bundle: true,
@@ -20,3 +23,6 @@ await esbuild.build({
   platform: "browser",
   target: ["es2017", "chrome58", "firefox57", "safari11", "edge16"],
 });
+
+console.log("🎉 Minimized browser version of the library built successfully");
+console.log("👋 Goodbye!");

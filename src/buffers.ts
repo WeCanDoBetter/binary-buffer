@@ -92,6 +92,22 @@ export class BufferBuilder {
   }
 
   /**
+   * Registers an alias for a type. This is useful when you want to use a different
+   * name for a type. For example, you can use `registerAlias('int', 'int32')` to
+   * use `int` instead of `int32`.
+   * @param alias The alias.
+   * @param typeName The type name.
+   * @template T The type of the object to be stored in the buffer.
+   */
+  registerAlias(alias: string, typeName: string) {
+    if (!this.types[typeName]) {
+      throw new Error(`Type '${typeName}' is not registered.`);
+    }
+
+    this.types[alias] = this.types[typeName];
+  }
+
+  /**
    * Creates a buffer. The buffer contains the header and the data. The header contains
    * the type IDs of the data. The data is serialized using the registered types.
    *
@@ -166,7 +182,8 @@ export class BufferBuilder {
         structuredClone(descriptor), // clone to prevent mutation
       );
 
-      for (const [key, value] of Object.entries(properties)) {
+      // sort to make sure the properties are in the same order
+      for (const [key, value] of Object.entries(properties).sort()) {
         ops[key as keyof T].set(value as any);
       }
 

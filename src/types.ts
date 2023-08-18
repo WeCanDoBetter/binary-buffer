@@ -346,3 +346,53 @@ export const array = <T>(type: TypeDefinition<T>): TypeDefinition<T[]> => {
     },
   };
 };
+
+/** A Universally Unique Identifier (UUID) type definition. */
+export type UUID = `${string}-${string}-${string}-${string}-${string}`;
+
+/**
+ * A Universally Unique Identifier (UUID) type definition. To register this type
+ * definition, use the `registerType` function. This type matches the `string`
+ * type in TypeScript, and can contain any UUID.
+ *
+ * This type's byte usage is 16.
+ *
+ * @example
+ * ```ts
+ * import { BufferBuilder } from "@wecandobetter/binary-buffer";
+ * import { array, uuid } from "@wecandobetter/binary-buffer/types";
+ *
+ * const builder = new BufferBuilder();
+ * builder.registerType(uuid);
+ * builder.registerType(array(uuid));
+ * ```
+ */
+export const uuid: TypeDefinition<UUID> = {
+  name: "uuid",
+  byteLength: 16,
+  serialize: (value: string) => {
+    const buffer = new ArrayBuffer(16);
+    const view = new DataView(buffer);
+    const uuid = value.replace(/-/g, "");
+
+    for (let i = 0; i < 16; i++) {
+      view.setUint8(i, parseInt(uuid.substring(i * 2, i * 2 + 2), 16));
+    }
+
+    return buffer;
+  },
+  deserialize: (buffer: ArrayBuffer) => {
+    const view = new DataView(buffer);
+    const parts = [];
+
+    for (let i = 0; i < 16; i++) {
+      parts.push(view.getUint8(i).toString(16).padStart(2, "0"));
+    }
+
+    return `${parts[0]}${parts[1]}${parts[2]}${parts[3]}-${parts[4]}${
+      parts[5]
+    }-${parts[6]}${parts[7]}-${parts[8]}${parts[9]}-${parts[10]}${parts[11]}${
+      parts[12]
+    }${parts[13]}${parts[14]}${parts[15]}`;
+  },
+};
